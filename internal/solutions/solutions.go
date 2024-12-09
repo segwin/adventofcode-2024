@@ -25,13 +25,10 @@ func RunAll(ctx context.Context) error {
 // RunOne runs the given day's solution. The day param must be in [1, 25].
 func RunOne(ctx context.Context, day int) error {
 	solutions := all()
-
-	idx := day - 1
-	if idx < 0 || idx > len(solutions) {
+	if day < 1 || day > len(solutions) {
 		return fmt.Errorf("%w (%d)", ErrInvalidDay, day)
 	}
-
-	return solutions[idx].Run(ctx)
+	return solutions[day-1].Run(ctx)
 }
 
 type solution interface {
