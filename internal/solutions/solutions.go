@@ -4,6 +4,32 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
+	"github.com/segwin/adventofcode-2024/internal/solutions/day1"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day10"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day11"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day12"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day13"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day14"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day15"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day16"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day17"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day18"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day19"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day2"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day20"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day21"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day22"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day23"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day24"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day25"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day3"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day4"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day5"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day6"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day7"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day8"
+	"github.com/segwin/adventofcode-2024/internal/solutions/day9"
 )
 
 var (
@@ -31,36 +57,36 @@ func RunOne(ctx context.Context, day int) error {
 	return solutions[day-1].Run(ctx)
 }
 
-type solution interface {
-	Run(_ context.Context) error
+type Solution interface {
+	Run(context.Context) error
 }
 
-func all() []solution {
-	return []solution{
-		&day1{},
-		&day2{},
-		&day3{},
-		&day4{},
-		&day5{},
-		&day6{},
-		&day7{},
-		&day8{},
-		&day9{},
-		&day10{},
-		&day11{},
-		&day12{},
-		&day13{},
-		&day14{},
-		&day15{},
-		&day16{},
-		&day17{},
-		&day18{},
-		&day19{},
-		&day20{},
-		&day21{},
-		&day22{},
-		&day23{},
-		&day24{},
-		&day25{},
+func all() []Solution {
+	return []Solution{
+		&day1.Solution{},
+		&day2.Solution{},
+		&day3.Solution{},
+		&day4.Solution{},
+		&day5.Solution{},
+		&day6.Solution{},
+		&day7.Solution{},
+		&day8.Solution{},
+		&day9.Solution{},
+		&day10.Solution{},
+		&day11.Solution{},
+		&day12.Solution{},
+		&day13.Solution{},
+		&day14.Solution{},
+		&day15.Solution{},
+		&day16.Solution{},
+		&day17.Solution{},
+		&day18.Solution{},
+		&day19.Solution{},
+		&day20.Solution{},
+		&day21.Solution{},
+		&day22.Solution{},
+		&day23.Solution{},
+		&day24.Solution{},
+		&day25.Solution{},
 	}
 }
