@@ -1,0 +1,42 @@
+linters:
+  disable-all: true
+  enable:
+    - govet
+    - errcheck
+    - staticcheck
+    - unused
+    - gosimple
+    - ineffassign
+    - typecheck
+    - bodyclose
+    - noctx
+    - revive
+    - rowserrcheck
+    - stylecheck
+    - gosec
+    - unconvert
+    - dupl
+    - goconst
+    - gocyclo
+    - gocognit
+    - asciicheck
+    - goimports
+    - misspell
+    - unparam
+    - dogsled
+    - nakedret
+    - prealloc
+    - whitespace
+    - goprintffuncname
+    #- gomnd # Magic numbers are fine for this event
+    - goerr113
+    - nestif
+    - copyloopvar
+    - exhaustive
+    - sqlclosecheck
+    - nolintlint
+
+issues:
+  exclude:
+    - Using the variable on range scope .* in function literal
+    - comment on exported var .* should be of the form .*
