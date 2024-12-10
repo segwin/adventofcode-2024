@@ -32,16 +32,16 @@ func main() {
 				},
 			},
 		},
-		Action: func(ctx context.Context, cmd *cli.Command) error {
+		Action: func(_ context.Context, cmd *cli.Command) error {
 			day := cmd.Int("day")
 			if day == 0 {
 				slog.Info("Running all solutions...")
-				if err := solutions.RunAll(ctx); err != nil {
+				if err := solutions.RunAll(); err != nil {
 					return fmt.Errorf("one or more solutions failed: %w", err)
 				}
 			} else {
 				slog.Info("Running single day's solution...", "day", day)
-				if err := solutions.RunOne(ctx, int(day)); err != nil {
+				if err := solutions.RunOne(int(day)); err != nil {
 					return fmt.Errorf("one or more solutions failed: %w", err)
 				}
 			}

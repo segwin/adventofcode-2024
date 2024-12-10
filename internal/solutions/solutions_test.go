@@ -1,7 +1,6 @@
 package solutions_test
 
 import (
-	"context"
 	"testing"
 
 	"github.com/segwin/adventofcode-2024/internal/solutions"
@@ -34,7 +33,7 @@ func TestRunOne(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			err := solutions.RunOne(context.Background(), tt.day)
+			err := solutions.RunOne(tt.day)
 			require.ErrorIs(t, err, tt.expectedErr)
 		})
 	}

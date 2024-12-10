@@ -1,7 +1,6 @@
 package solutions
 
 import (
-	"context"
 	"errors"
 	"fmt"
 
@@ -38,10 +37,14 @@ var (
 
 // RunAll runs each day's solution sequentially.
 // If a day's solution fails, the next day is still executed.
-func RunAll(ctx context.Context) error {
+func RunAll() error {
 	var errs []error
-	for i, solution := range all() {
-		if err := solution.Run(ctx); err != nil {
+	for i, buildSolution := range Builders() {
+		solution, err := buildSolution()
+		if err != nil {
+			return fmt.Errorf("building day %d solution: %w", i+1, err)
+		}
+		if err := solution.RunToConsole(); err != nil {
 			errs = append(errs, fmt.Errorf("day %d: %w", i+1, err))
 		}
 	}
@@ -49,44 +52,50 @@ func RunAll(ctx context.Context) error {
 }
 
 // RunOne runs the given day's solution. The day param must be in [1, 25].
-func RunOne(ctx context.Context, day int) error {
-	solutions := all()
+func RunOne(day int) error {
+	solutions := Builders()
 	if day < 1 || day > len(solutions) {
 		return fmt.Errorf("%w (%d)", ErrInvalidDay, day)
 	}
-	return solutions[day-1].Run(ctx)
+
+	solution, err := solutions[day-1]()
+	if err != nil {
+		return fmt.Errorf("building day %d solution: %w", day, err)
+	}
+	return solution.RunToConsole()
 }
 
 type Solution interface {
-	Run(context.Context) error
+	// RunToConsole runs the solution and prints the result to the console.
+	RunToConsole() error
 }
 
-func all() []Solution {
-	return []Solution{
-		&day1.Solution{},
-		&day2.Solution{},
-		&day3.Solution{},
-		&day4.Solution{},
-		&day5.Solution{},
-		&day6.Solution{},
-		&day7.Solution{},
-		&day8.Solution{},
-		&day9.Solution{},
-		&day10.Solution{},
-		&day11.Solution{},
-		&day12.Solution{},
-		&day13.Solution{},
-		&day14.Solution{},
-		&day15.Solution{},
-		&day16.Solution{},
-		&day17.Solution{},
-		&day18.Solution{},
-		&day19.Solution{},
-		&day20.Solution{},
-		&day21.Solution{},
-		&day22.Solution{},
-		&day23.Solution{},
-		&day24.Solution{},
-		&day25.Solution{},
+func Builders() []func() (Solution, error) {
+	return []func() (Solution, error){
+		func() (Solution, error) { return day1.BuildSolution() },
+		func() (Solution, error) { return &day2.Solution{}, nil },
+		func() (Solution, error) { return &day3.Solution{}, nil },
+		func() (Solution, error) { return &day4.Solution{}, nil },
+		func() (Solution, error) { return &day5.Solution{}, nil },
+		func() (Solution, error) { return &day6.Solution{}, nil },
+		func() (Solution, error) { return &day7.Solution{}, nil },
+		func() (Solution, error) { return &day8.Solution{}, nil },
+		func() (Solution, error) { return &day9.Solution{}, nil },
+		func() (Solution, error) { return &day10.Solution{}, nil },
+		func() (Solution, error) { return &day11.Solution{}, nil },
+		func() (Solution, error) { return &day12.Solution{}, nil },
+		func() (Solution, error) { return &day13.Solution{}, nil },
+		func() (Solution, error) { return &day14.Solution{}, nil },
+		func() (Solution, error) { return &day15.Solution{}, nil },
+		func() (Solution, error) { return &day16.Solution{}, nil },
+		func() (Solution, error) { return &day17.Solution{}, nil },
+		func() (Solution, error) { return &day18.Solution{}, nil },
+		func() (Solution, error) { return &day19.Solution{}, nil },
+		func() (Solution, error) { return &day20.Solution{}, nil },
+		func() (Solution, error) { return &day21.Solution{}, nil },
+		func() (Solution, error) { return &day22.Solution{}, nil },
+		func() (Solution, error) { return &day23.Solution{}, nil },
+		func() (Solution, error) { return &day24.Solution{}, nil },
+		func() (Solution, error) { return &day25.Solution{}, nil },
 	}
 }

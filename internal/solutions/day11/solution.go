@@ -1,10 +1,8 @@
 package day11
 
-import "context"
-
 type Solution struct{}
 
-func (s *Solution) Run(_ context.Context) error {
+func (s *Solution) RunToConsole() error {
 	// TODO
 	return nil
 }
