@@ -31,7 +31,6 @@ linters:
     - goerr113
     - nestif
     - copyloopvar
-    - exhaustive
     - sqlclosecheck
     - nolintlint
 
