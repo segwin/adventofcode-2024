@@ -21,7 +21,7 @@ func BuildSolution() (*Solution, error) {
 			return nil, fmt.Errorf("parsing input data: %w", err)
 		}
 
-		intRow, err := transform.Atois(row)
+		intRow, err := transform.Atois(row...)
 		if err != nil {
 			return nil, fmt.Errorf("parsing columns as ints in input data: %w", err)
 		}
