@@ -19,6 +19,7 @@ func (s *Solution) RunToConsole() error {
 	crossMases := CountCrossMas(s.Search)
 	fmt.Print("  PART 2:\n")
 	fmt.Printf("    X-MASes: %d\n", crossMases)
+
 	return nil
 }
 

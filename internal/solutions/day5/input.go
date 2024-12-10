@@ -14,7 +14,10 @@ import (
 var inputData []byte
 
 func BuildSolution() (*Solution, error) {
-	var s Solution
+	s := Solution{
+		PagesAfter: map[int][]int{},
+		Updates:    nil,
+	}
 
 	reachedUpdates := false
 	sc := bufio.NewScanner(bytes.NewReader(inputData))
@@ -35,7 +38,9 @@ func BuildSolution() (*Solution, error) {
 			if err != nil {
 				return nil, fmt.Errorf("parsing rule line as ints (%q): %w", line, err)
 			}
-			s.Rules = append(s.Rules, PageRule{Before: rules[0], After: rules[1]})
+
+			page, after := rules[0], rules[1]
+			s.PagesAfter[page] = append(s.PagesAfter[page], after)
 		}
 	}
 

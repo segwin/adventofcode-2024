@@ -9,8 +9,10 @@ import (
 )
 
 type Solution struct {
-	// Rules for page ordering each update should respect.
-	Rules []PageRule
+	// PagesAfter is the set of rules each update should respect.
+	// Each entry's values is the set of pages that must come after the keyed page.
+	PagesAfter map[int][]int
+
 	// Updates is the set of pages to be published.
 	Updates [][]int
 }
@@ -18,39 +20,69 @@ type Solution struct {
 func (s *Solution) RunToConsole() error {
 	fmt.Print("DAY 5:\n")
 
-	correctSum, err := SumCorrectUpdates(s.Updates, s.Rules)
+	// sanity check: updates must contain an odd number of pages to respect "middle page" req
+	for i, pages := range s.Updates {
+		if len(pages)%2 == 0 {
+			return fmt.Errorf("%w: update %d has an even number of pages", parsing.ErrInvalidData, i)
+		}
+	}
+
+	correctSum, err := SumCorrectUpdates(s.Updates, s.PagesAfter)
 	if err != nil {
 		return fmt.Errorf("summing correctly-ordered updates: %w", err)
 	}
-
 	fmt.Print("  PART 1:\n")
-	fmt.Printf("    Middle page sum: %d\n", correctSum)
+	fmt.Printf("    Middle page sum for correct: %d\n", correctSum)
+
+	incorrectSum, err := SumIncorrectUpdates(s.Updates, s.PagesAfter)
+	if err != nil {
+		return fmt.Errorf("summing correctly-ordered updates: %w", err)
+	}
+	fmt.Print("  PART 2:\n")
+	fmt.Printf("    Middle page sum for reordered incorrect updates: %d\n", incorrectSum)
+
 	return nil
 }
 
 // SumCorrectUpdates returns the sum of each correctly-ordered update's middle page.
 //
-// Returns an error if any update contains an even number of pages (ambiguous middle page).
-func SumCorrectUpdates(updates [][]int, rules []PageRule) (int, error) {
-	// sanity check: updates must contain an odd number of pages to respect "middle page" req
-	for i, pages := range updates {
-		if len(pages)%2 == 0 {
-			return 0, fmt.Errorf("%w: update %d has an even number of pages", parsing.ErrInvalidData, i)
-		}
-	}
-
+// Each update must contain an odd number of pages to avoid middle-page ambiguity.
+func SumCorrectUpdates(updates [][]int, pagesAfter map[int][]int) (int, error) {
 	sum := 0
-	for midPage := range middlePages(correctlyOrderedUpdates(updates, rules)) {
-		sum += midPage
+	for update := range filterByCorrectness(updates, pagesAfter, true) {
+		sum += middleElement(update)
 	}
 	return sum, nil
 }
 
-func correctlyOrderedUpdates(updates [][]int, rules []PageRule) iter.Seq[[]int] {
+// SumIncorrectUpdates returns the sum of each incorrectly-ordered update's middle page after reordering.
+//
+// Each update must contain an odd number of pages to avoid middle-page ambiguity.
+func SumIncorrectUpdates(updates [][]int, pagesAfter map[int][]int) (int, error) {
+	isBefore := func(a, b int) int {
+		if slices.Contains(pagesAfter[a], b) {
+			return -1
+		}
+		if slices.Contains(pagesAfter[b], a) {
+			return 1
+		}
+		return 0
+	}
+
+	sum := 0
+	for update := range filterByCorrectness(updates, pagesAfter, false) {
+		correctedUpdate := slices.SortedFunc(slices.Values(update), isBefore)
+		sum += middleElement(correctedUpdate)
+	}
+	return sum, nil
+}
+
+// filterByCorrectness returns the subset of updates that match the desired correctness.
+// Correctness is determined by checking the given set of page rules.
+func filterByCorrectness(updates [][]int, pagesAfter map[int][]int, wantCorrect bool) iter.Seq[[]int] {
 	return func(yield func([]int) bool) {
-		pagesAfter := AggregateRules(rules)
 		for _, update := range updates {
-			if isCorrectlyOrdered(update, pagesAfter) {
+			if isCorrect(update, pagesAfter) == wantCorrect {
 				if !yield(update) {
 					return
 				}
@@ -59,7 +91,8 @@ func correctlyOrderedUpdates(updates [][]int, rules []PageRule) iter.Seq[[]int] 
 	}
 }
 
-func isCorrectlyOrdered(update []int, pagesAfter map[int][]int) bool {
+// isCorrect returns true if all pages in update respect the rules in pagesAfter.
+func isCorrect(update []int, pagesAfter map[int][]int) bool {
 	// check each page after 1st: preceding pages must not violate pagesAfter rules
 	for i := 1; i < len(update); i++ {
 		for _, pageAfter := range pagesAfter[update[i]] {
@@ -71,12 +104,6 @@ func isCorrectlyOrdered(update []int, pagesAfter map[int][]int) bool {
 	return true
 }
 
-func middlePages(updates iter.Seq[[]int]) iter.Seq[int] {
-	return func(yield func(int) bool) {
-		for pages := range updates {
-			if !yield(pages[len(pages)/2]) {
-				return
-			}
-		}
-	}
+func middleElement(s []int) int {
+	return s[len(s)/2]
 }

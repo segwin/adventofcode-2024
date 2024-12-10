@@ -18,7 +18,6 @@ func (s *Solution) RunToConsole() error {
 	if err != nil {
 		return fmt.Errorf("executing muls in memory: %w", err)
 	}
-
 	fmt.Print("  PART 1:\n")
 	fmt.Printf("    Sum: %d\n", sum)
 
@@ -26,7 +25,6 @@ func (s *Solution) RunToConsole() error {
 	if err != nil {
 		return fmt.Errorf("executing muls in memory with conditionals enabled: %w", err)
 	}
-
 	fmt.Print("  PART 2:\n")
 	fmt.Printf("    Sum with conditionals: %d\n", withConditionals)
 

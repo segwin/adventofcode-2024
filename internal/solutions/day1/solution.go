@@ -26,7 +26,6 @@ func (s *Solution) RunToConsole() error {
 	if err != nil {
 		return fmt.Errorf("computing total distance: %w", err)
 	}
-
 	fmt.Print("  PART 1:\n")
 	fmt.Printf("    Total distance: %d\n", totalDistance)
 
@@ -34,9 +33,9 @@ func (s *Solution) RunToConsole() error {
 	if err != nil {
 		return fmt.Errorf("computing similarity score: %w", err)
 	}
-
 	fmt.Print("  PART 2:\n")
 	fmt.Printf("    Similarity score: %d\n", similarity)
+
 	return nil
 }
 

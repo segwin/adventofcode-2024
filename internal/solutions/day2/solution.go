@@ -21,7 +21,6 @@ func (s *Solution) RunToConsole() error {
 	if err != nil {
 		return fmt.Errorf("counting safe reports: %w", err)
 	}
-
 	fmt.Print("  PART 1:\n")
 	fmt.Printf("    Safe reports: %d\n", safeReports)
 
@@ -29,7 +28,6 @@ func (s *Solution) RunToConsole() error {
 	if err != nil {
 		return fmt.Errorf("counting safe reports with problem dampening: %w", err)
 	}
-
 	fmt.Print("  PART 2:\n")
 	fmt.Printf("    Safe reports after problem dampening: %d\n", withDampening)
 
