@@ -22,7 +22,7 @@ type Solution struct {
 func (s *Solution) RunToConsole() error {
 	fmt.Print("DAY 1:\n")
 
-	totalDistance, err := s.TotalDistance()
+	totalDistance, err := TotalDistance(s.Left, s.Right)
 	if err != nil {
 		return fmt.Errorf("computing total distance: %w", err)
 	}
@@ -30,7 +30,7 @@ func (s *Solution) RunToConsole() error {
 	fmt.Print("  PART 1:\n")
 	fmt.Printf("    Total distance: %d\n", totalDistance)
 
-	similarity, err := s.Similarity()
+	similarity, err := Similarity(s.Left, s.Right)
 	if err != nil {
 		return fmt.Errorf("computing similarity score: %w", err)
 	}
@@ -40,14 +40,14 @@ func (s *Solution) RunToConsole() error {
 	return nil
 }
 
-func (s *Solution) TotalDistance() (int, error) {
-	if err := s.validateInputs(); err != nil {
+func TotalDistance(left, right []int) (int, error) {
+	if err := validateLens(left, right); err != nil {
 		return 0, err
 	}
 
 	// sort lists to compare lowest values pairwise
-	left := slices.Sorted(slices.Values(s.Left))
-	right := slices.Sorted(slices.Values(s.Right))
+	left = slices.Sorted(slices.Values(left))
+	right = slices.Sorted(slices.Values(right))
 
 	totalDistance := 0
 	for i := range left {
@@ -57,14 +57,14 @@ func (s *Solution) TotalDistance() (int, error) {
 	return totalDistance, nil
 }
 
-func (s *Solution) Similarity() (int, error) {
-	if err := s.validateInputs(); err != nil {
+func Similarity(left, right []int) (int, error) {
+	if err := validateLens(left, right); err != nil {
 		return 0, err
 	}
 
 	score := 0
-	for _, lv := range s.Left {
-		for _, rv := range s.Right {
+	for _, lv := range left {
+		for _, rv := range right {
 			if lv == rv {
 				score += lv
 			}
@@ -74,9 +74,9 @@ func (s *Solution) Similarity() (int, error) {
 	return score, nil
 }
 
-func (s *Solution) validateInputs() error {
-	if len(s.Left) != len(s.Right) {
-		return fmt.Errorf("%w (left = %d, right = %d)", ErrMismatchedLens, len(s.Left), len(s.Right))
+func validateLens(left, right []int) error {
+	if len(left) != len(right) {
+		return fmt.Errorf("%w (left = %d, right = %d)", ErrMismatchedLens, len(left), len(right))
 	}
 	return nil
 }

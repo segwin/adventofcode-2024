@@ -7,15 +7,17 @@ import (
 	"github.com/segwin/adventofcode-2024/internal/transform"
 )
 
+type Report []int
+
 type Solution struct {
 	// Reports from the engineers. Each value is a level.
-	Reports [][]int
+	Reports []Report
 }
 
 func (s *Solution) RunToConsole() error {
 	fmt.Print("DAY 2:\n")
 
-	safeReports, err := s.SafeReports(false)
+	safeReports, err := SafeReports(s.Reports, false)
 	if err != nil {
 		return fmt.Errorf("counting safe reports: %w", err)
 	}
@@ -23,7 +25,7 @@ func (s *Solution) RunToConsole() error {
 	fmt.Print("  PART 1:\n")
 	fmt.Printf("    Safe reports: %d\n", safeReports)
 
-	withDampening, err := s.SafeReports(true)
+	withDampening, err := SafeReports(s.Reports, true)
 	if err != nil {
 		return fmt.Errorf("counting safe reports with problem dampening: %w", err)
 	}
@@ -41,9 +43,9 @@ func (s *Solution) RunToConsole() error {
 //   - adjacent report values only differ by 1 or 2
 //
 // If problemDampening is true, up to one "unsafe" level will be ignored.
-func (s *Solution) SafeReports(problemDampening bool) (int, error) {
+func SafeReports(reports []Report, problemDampening bool) (int, error) {
 	count := 0
-	for _, report := range s.Reports {
+	for _, report := range reports {
 		if isSafe(report) {
 			count++ // safe
 			continue
@@ -64,7 +66,7 @@ func (s *Solution) SafeReports(problemDampening bool) (int, error) {
 	return count, nil
 }
 
-func isSafe(report []int) bool {
+func isSafe(report Report) bool {
 	if len(report) < 2 {
 		return true // all conditions are met if report does not contain multiple values
 	}
