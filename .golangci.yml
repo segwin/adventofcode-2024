@@ -28,7 +28,7 @@ linters:
     - whitespace
     - goprintffuncname
     #- gomnd # Magic numbers are fine for this event
-    - goerr113
+    - err113
     - nestif
     - copyloopvar
     - sqlclosecheck
