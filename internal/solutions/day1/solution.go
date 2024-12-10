@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+
+	"github.com/segwin/adventofcode-2024/internal/transform"
 )
 
 var (
@@ -11,7 +13,9 @@ var (
 )
 
 type Solution struct {
-	Left  []int
+	// Left group's reported IDs.
+	Left []int
+	// Right group's reported IDs.
 	Right []int
 }
 
@@ -28,7 +32,7 @@ func (s *Solution) RunToConsole() error {
 
 	similarity, err := s.Similarity()
 	if err != nil {
-		return fmt.Errorf("computing total distance: %w", err)
+		return fmt.Errorf("computing similarity score: %w", err)
 	}
 
 	fmt.Print("  PART 2:\n")
@@ -47,11 +51,7 @@ func (s *Solution) TotalDistance() (int, error) {
 
 	totalDistance := 0
 	for i := range left {
-		low, high := left[i], right[i]
-		if high < low {
-			low, high = high, low
-		}
-		totalDistance += high - low
+		totalDistance += transform.Abs(left[i] - right[i])
 	}
 
 	return totalDistance, nil
