@@ -3,6 +3,7 @@ package day6
 import (
 	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/segwin/adventofcode-2024/internal/parsing"
 )
@@ -73,31 +74,76 @@ func CountGuardPositions(floorMap FloorMap) (uniquePositions int, states []Guard
 func CountLoopPositions(floorMap FloorMap, originalStates []GuardState) (int, error) {
 	startingPosition := originalStates[0].Position // starting position is protected
 
-	loopPositions := map[Position]struct{}{} // deduplicate obstacles that generate >1 loop
+	// produce loop positions by propagating each state after inserting the obstacle
+	var wg sync.WaitGroup
+	loopPositions := make(chan Position)
+	errs := make(chan error, 1)
+
 	for i := 0; i < len(originalStates)-1; i++ {
 		cur, next := originalStates[i], originalStates[i+1]
-		if next.Position == cur.Position {
-			continue // guard is not moving yet, check the next state
-		}
-		if next.Position == startingPosition {
-			continue // can't block the guard's starting position
-		}
 
-		// try putting an obstacle at the next position
-		alteredMap := floorMap.
-			WithTile(next.Position, Obstacle)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
 
-		_, _, err := CountGuardPositions(alteredMap)
-		if errors.Is(err, errLoopFound) {
-			loopPositions[next.Position] = struct{}{}
-			continue
-		}
-		if err != nil {
-			return 0, fmt.Errorf("non-loop error: %w", err)
-		}
+			if next.Position == startingPosition {
+				return // can't block the guard's starting position
+			}
+
+			foundLoop, err := obstacleAheadCausesLoop(cur, next, floorMap)
+			if err != nil {
+				errs <- err
+				return
+			}
+			if foundLoop {
+				loopPositions <- next.Position
+			}
+		}()
 	}
 
-	return len(loopPositions), nil
+	// once all producers are done, close the channel to end collection
+	go func() {
+		wg.Wait()
+		close(loopPositions)
+	}()
+
+	// collect loop positions as they're produced
+	uniqueLoopPositions := map[Position]struct{}{} // deduplicate obstacles that generate >1 loop
+	var err error
+
+	for {
+		select {
+		case pos, ok := <-loopPositions:
+			if !ok {
+				return len(uniqueLoopPositions), err
+			}
+			uniqueLoopPositions[pos] = struct{}{}
+
+		case producerErr := <-errs:
+			err = errors.Join(err, producerErr) // continue to collect all individual errors
+		}
+	}
+}
+
+// obstacleAheadCausesLoop returns true if placing a single obstacle in front of the guard causes
+// them to enter a loop.
+func obstacleAheadCausesLoop(cur, next GuardState, floorMap FloorMap) (bool, error) {
+	if next.Position == cur.Position {
+		return false, nil // guard is not moving between these states
+	}
+
+	// try putting an obstacle at the next position
+	alteredMap := floorMap.
+		WithTile(next.Position, Obstacle)
+
+	_, _, err := CountGuardPositions(alteredMap)
+	if errors.Is(err, errLoopFound) {
+		return true, nil
+	}
+	if err != nil {
+		return false, fmt.Errorf("non-loop error: %w", err)
+	}
+	return false, nil
 }
 
 func findGuardStates(floorMap FloorMap) (states []GuardState) {
