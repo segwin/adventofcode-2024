@@ -1,6 +1,10 @@
 package day8
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/segwin/adventofcode-2024/internal/solutions/map2d"
+)
 
 type Solution struct {
 	CityMap CityMap
@@ -19,27 +23,27 @@ func (s *Solution) RunToConsole() error {
 }
 
 func UniqueAntinodeLocations(cityMap CityMap, includeHarmonics bool) int {
-	uniqueLocations := map[Position]struct{}{}
+	uniqueLocations := map[map2d.Position]struct{}{}
 	for _, antinode := range findAllAntinodes(cityMap, includeHarmonics) {
 		uniqueLocations[antinode] = struct{}{}
 	}
 	return len(uniqueLocations)
 }
 
-func findAllAntinodes(cityMap CityMap, includeHarmonics bool) []Position {
+func findAllAntinodes(cityMap CityMap, includeHarmonics bool) []map2d.Position {
 	// catalog all antennae on the map by type
-	antennae := map[Tile][]Position{}
+	antennae := map[Tile][]map2d.Position{}
 	for i, row := range cityMap {
 		for j, tile := range row {
 			if tile == Empty {
 				continue // nothing to do
 			}
-			antennae[tile] = append(antennae[tile], Position{X: j, Y: i})
+			antennae[tile] = append(antennae[tile], map2d.PositionFromIndex(i, j))
 		}
 	}
 
 	// for each type, find each antenna pair's antinodes
-	var antinodes []Position
+	var antinodes []map2d.Position
 	for _, positions := range antennae {
 		if len(positions) < 2 {
 			continue // antinodes require at least 1 pair
@@ -58,16 +62,16 @@ func findAllAntinodes(cityMap CityMap, includeHarmonics bool) []Position {
 	return antinodes
 }
 
-func findAntinodesAfter(cityMap CityMap, p1, p2 Position, includeHarmonics bool) (antinodes []Position) {
+func findAntinodesAfter(cityMap CityMap, p1, p2 map2d.Position, includeHarmonics bool) (antinodes []map2d.Position) {
 	distance := p2.Sub(p1)
 
 	if includeHarmonics {
-		antinodes = []Position{p1, p2} // antennae's positions are included in harmonics mode
+		antinodes = []map2d.Position{p1, p2} // antennae's positions are included in harmonics mode
 	}
 
 	candidate := p1.Sub(distance)
 	for {
-		if !cityMap.Contains(candidate) {
+		if _, ok := cityMap.Get(candidate); !ok {
 			return antinodes // reached end of map
 		}
 

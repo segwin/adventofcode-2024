@@ -1,11 +1,13 @@
 package day6
 
-import "slices"
+import (
+	"github.com/segwin/adventofcode-2024/internal/solutions/map2d"
+)
 
 // GuardState wandering around the map using a strict ruleset.
 type GuardState struct {
 	// Position of the guard on the map grid.
-	Position Position
+	Position map2d.Position
 	// Direction the guard is currently walking in. Changes when encountering an obstruction.
 	Direction Direction
 }
@@ -16,7 +18,7 @@ type GuardState struct {
 // If the guard exits the room, the returned state is nil.
 func (g GuardState) AdvanceOne(floorMap FloorMap) (*GuardState, FloorMap) {
 	// advance guard to next position
-	nextPosition := Position{
+	nextPosition := map2d.Position{
 		X: g.Position.X + g.Direction.x,
 		Y: g.Position.Y + g.Direction.y,
 	}
@@ -29,12 +31,12 @@ func (g GuardState) AdvanceOne(floorMap FloorMap) (*GuardState, FloorMap) {
 	if nextTile == Obstacle {
 		// something's blocking the path, turn right 90 degrees
 		newState := &GuardState{Position: g.Position, Direction: g.Direction.turnRight()}
-		return newState, floorMap.WithTile(g.Position, newState.Tile())
+		return newState, floorMap.With(g.Position, newState.Tile())
 	}
 
 	// nothing ahead, take a step
 	newState := &GuardState{Position: nextPosition, Direction: g.Direction}
-	return newState, floorMap.WithTile(newState.Position, newState.Tile())
+	return newState, floorMap.With(newState.Position, newState.Tile())
 }
 
 func (g GuardState) Tile() Tile {
@@ -49,12 +51,6 @@ func (g GuardState) Tile() Tile {
 		return GuardWest
 	}
 	return Empty
-}
-
-// Position on the map grid.
-type Position struct {
-	X int
-	Y int
 }
 
 // Direction for a movement on the map grid.
@@ -125,24 +121,4 @@ func (t Tile) Direction() Direction {
 }
 
 // FloorMap is the map of the room.
-type FloorMap [][]Tile
-
-// Get the tile at the given position. If that position is outside the map, ok is set to false.
-func (m FloorMap) Get(pos Position) (value Tile, ok bool) {
-	if pos.Y < 0 || pos.Y >= len(m) || pos.X < 0 || pos.X >= len(m[pos.Y]) {
-		return Empty, false
-	}
-	return m[pos.Y][pos.X], true
-}
-
-// WithTile returns a new map with the given position set to newValue. Unrelated rows are shared
-// in memory with the original map.
-func (m FloorMap) WithTile(pos Position, newValue Tile) FloorMap {
-	// create copy of map with a new row allocated before mutating it
-	newMap := slices.Clone(m)
-	newMap[pos.Y] = slices.Clone(newMap[pos.Y])
-
-	// update the value at the given position
-	newMap[pos.Y][pos.X] = newValue
-	return newMap
-}
+type FloorMap = map2d.Map[Tile]

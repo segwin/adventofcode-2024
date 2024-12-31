@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/segwin/adventofcode-2024/internal/parsing"
+	"github.com/segwin/adventofcode-2024/internal/solutions/map2d"
 )
 
 var (
@@ -76,7 +77,7 @@ func CountLoopPositions(floorMap FloorMap, originalStates []GuardState) (int, er
 
 	// produce loop positions by propagating each state after inserting the obstacle
 	var wg sync.WaitGroup
-	loopPositions := make(chan Position)
+	loopPositions := make(chan map2d.Position)
 	errs := make(chan error, 1)
 
 	for i := 0; i < len(originalStates)-1; i++ {
@@ -108,7 +109,7 @@ func CountLoopPositions(floorMap FloorMap, originalStates []GuardState) (int, er
 	}()
 
 	// collect loop positions as they're produced
-	uniqueLoopPositions := map[Position]struct{}{} // deduplicate obstacles that generate >1 loop
+	uniqueLoopPositions := map[map2d.Position]struct{}{} // deduplicate obstacles that generate >1 loop
 	var err error
 
 	for {
@@ -133,8 +134,7 @@ func obstacleAheadCausesLoop(cur, next GuardState, floorMap FloorMap) (bool, err
 	}
 
 	// try putting an obstacle at the next position
-	alteredMap := floorMap.
-		WithTile(next.Position, Obstacle)
+	alteredMap := floorMap.With(next.Position, Obstacle)
 
 	_, _, err := CountGuardPositions(alteredMap)
 	if errors.Is(err, errLoopFound) {
@@ -153,7 +153,7 @@ func findGuardStates(floorMap FloorMap) (states []GuardState) {
 				continue // not a guard
 			}
 			states = append(states, GuardState{
-				Position:  Position{X: j, Y: i},
+				Position:  map2d.PositionFromIndex(i, j),
 				Direction: tile.Direction(),
 			})
 		}
