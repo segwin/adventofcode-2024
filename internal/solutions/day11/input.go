@@ -2,15 +2,25 @@ package day11
 
 import (
 	_ "embed"
+	"fmt"
+	"strings"
+
+	"github.com/segwin/adventofcode-2024/internal/transform"
 )
 
 //go:embed input.txt
-var inputData []byte //nolint:unused // TODO: remove nolint once BuildSolution implemented
+var inputData []byte
 
 func BuildSolution() (*Solution, error) {
-	var s Solution
+	values, err := transform.Atois(strings.Fields(string(inputData))...)
+	if err != nil {
+		return nil, fmt.Errorf("parsing input data: %w", err)
+	}
 
-	// TODO
+	s := Solution{InitialStones: make([]Stone, len(values))}
+	for i, v := range values {
+		s.InitialStones[i] = Stone(v)
+	}
 
 	return &s, nil
 }
