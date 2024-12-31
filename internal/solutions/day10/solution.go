@@ -16,7 +16,10 @@ func (s *Solution) RunToConsole() error {
 	trailheads := GetTrailheads(s.Terrain)
 
 	fmt.Print("  PART 1:\n")
-	fmt.Printf("    Total score: %d\n", AddScores(trailheads))
+	fmt.Printf("    Total score: %d\n", TotalScore(trailheads))
+
+	fmt.Print("  PART 2:\n")
+	fmt.Printf("    Total rating: %d\n", TotalRating(trailheads))
 
 	return nil
 }
@@ -34,7 +37,8 @@ func GetTrailheads(terrain TopographicMap) []Trailhead {
 
 			trailheads = append(trailheads, Trailhead{
 				Position: position,
-				Score:    root.CountTrails(),
+				Score:    root.CountSummits(),
+				Rating:   root.CountTrails(),
 			})
 		}
 	}
@@ -42,10 +46,22 @@ func GetTrailheads(terrain TopographicMap) []Trailhead {
 	return trailheads
 }
 
-func AddScores(trailheads []Trailhead) int {
+// TotalScore returns the sum of all trailhead scores, i.e. the sum of all unique summits reachable
+// from each trailhead.
+func TotalScore(trailheads []Trailhead) int {
 	sum := 0
 	for _, th := range trailheads {
 		sum += th.Score
+	}
+	return sum
+}
+
+// TotalRating returns the sum of all trailhead ratings, i.e. the sum of all distinct trails available
+// from each trailhead.
+func TotalRating(trailheads []Trailhead) int {
+	sum := 0
+	for _, th := range trailheads {
+		sum += th.Rating
 	}
 	return sum
 }

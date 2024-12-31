@@ -20,7 +20,7 @@ func TestGetTrailheads(t *testing.T) {
 		// outputs
 		expected []day10.Trailhead
 	}{
-		"day's simplified example": {
+		"day's small example": {
 			terrain: [][]int{
 				{0, 1, 2, 3},
 				{1, 2, 3, 4},
@@ -28,7 +28,7 @@ func TestGetTrailheads(t *testing.T) {
 				{9, 8, 7, 6},
 			},
 			expected: []day10.Trailhead{
-				{Position: map2d.Position{X: 0, Y: 0}, Score: 1},
+				{Position: map2d.Position{X: 0, Y: 0}, Score: 1, Rating: 16},
 			},
 		},
 		"day's full example": {
@@ -43,15 +43,57 @@ func TestGetTrailheads(t *testing.T) {
 				{1, 0, 4, 5, 6, 7, 3, 2},
 			},
 			expected: []day10.Trailhead{
-				{Position: map2d.Position{X: 0, Y: 6}, Score: 5},
-				{Position: map2d.Position{X: 1, Y: 7}, Score: 5},
-				{Position: map2d.Position{X: 2, Y: 0}, Score: 5},
-				{Position: map2d.Position{X: 2, Y: 5}, Score: 1},
-				{Position: map2d.Position{X: 4, Y: 0}, Score: 6},
-				{Position: map2d.Position{X: 4, Y: 2}, Score: 5},
-				{Position: map2d.Position{X: 5, Y: 5}, Score: 3},
-				{Position: map2d.Position{X: 6, Y: 4}, Score: 3},
-				{Position: map2d.Position{X: 6, Y: 6}, Score: 3},
+				{Position: map2d.Position{Y: 0, X: 2}, Score: 5, Rating: 20},
+				{Position: map2d.Position{Y: 0, X: 4}, Score: 6, Rating: 24},
+				{Position: map2d.Position{Y: 2, X: 4}, Score: 5, Rating: 10},
+				{Position: map2d.Position{Y: 4, X: 6}, Score: 3, Rating: 4},
+				{Position: map2d.Position{Y: 5, X: 2}, Score: 1, Rating: 1},
+				{Position: map2d.Position{Y: 5, X: 5}, Score: 3, Rating: 4},
+				{Position: map2d.Position{Y: 6, X: 0}, Score: 5, Rating: 5},
+				{Position: map2d.Position{Y: 6, X: 6}, Score: 3, Rating: 8},
+				{Position: map2d.Position{Y: 7, X: 1}, Score: 5, Rating: 5},
+			},
+		},
+
+		"day's simplified example 1": {
+			terrain: [][]int{
+				{-1, -1, -1, -1, -1, 0, -1},
+				{-1, -1, 4, 3, 2, 1, -1},
+				{-1, -1, 5, -1, -1, 2, -1},
+				{-1, -1, 6, 5, 4, 3, -1},
+				{-1, -1, 7, -1, -1, 4, -1},
+				{-1, -1, 8, 7, 6, 5, -1},
+				{-1, -1, 9, -1, -1, -1, -1},
+			},
+			expected: []day10.Trailhead{
+				{Position: map2d.Position{X: 5, Y: 0}, Score: 1, Rating: 3},
+			},
+		},
+		"day's simplified example 2": {
+			terrain: [][]int{
+				{-1, -1, 9, 0, -1, -1, 9},
+				{-1, -1, -1, 1, -1, 9, 8},
+				{-1, -1, -1, 2, -1, -1, 7},
+				{6, 5, 4, 3, 4, 5, 6},
+				{7, 6, 5, -1, 9, 8, 7},
+				{8, 7, 6, -1, -1, -1, -1},
+				{9, 8, 7, -1, -1, -1, -1},
+			},
+			expected: []day10.Trailhead{
+				{Position: map2d.Position{X: 3, Y: 0}, Score: 4, Rating: 13},
+			},
+		},
+		"day's simplified example 3": {
+			terrain: [][]int{
+				{0, 1, 2, 3, 4, 5},
+				{1, 2, 3, 4, 5, 6},
+				{2, 3, 4, 5, 6, 7},
+				{3, 4, 5, 6, 7, 8},
+				{4, -1, 6, 7, 8, 9},
+				{5, 6, 7, 8, 9, -1},
+			},
+			expected: []day10.Trailhead{
+				{Position: map2d.Position{X: 0, Y: 0}, Score: 2, Rating: 227},
 			},
 		},
 	}
