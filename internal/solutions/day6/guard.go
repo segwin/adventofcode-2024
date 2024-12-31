@@ -9,7 +9,7 @@ type GuardState struct {
 	// Position of the guard on the map grid.
 	Position map2d.Position
 	// Direction the guard is currently walking in. Changes when encountering an obstruction.
-	Direction Direction
+	Direction map2d.Direction
 }
 
 // AdvanceOne makes the guard take a step forward or turn 90 degrees based on their current state,
@@ -18,10 +18,7 @@ type GuardState struct {
 // If the guard exits the room, the returned state is nil.
 func (g GuardState) AdvanceOne(floorMap FloorMap) (*GuardState, FloorMap) {
 	// advance guard to next position
-	nextPosition := map2d.Position{
-		X: g.Position.X + g.Direction.x,
-		Y: g.Position.Y + g.Direction.y,
-	}
+	nextPosition := g.Position.Move(g.Direction, 1)
 	nextTile, ok := floorMap.Get(nextPosition)
 	if !ok {
 		// the guard has left the room
@@ -30,7 +27,7 @@ func (g GuardState) AdvanceOne(floorMap FloorMap) (*GuardState, FloorMap) {
 
 	if nextTile == Obstacle {
 		// something's blocking the path, turn right 90 degrees
-		newState := &GuardState{Position: g.Position, Direction: g.Direction.turnRight()}
+		newState := &GuardState{Position: g.Position, Direction: turnRight(g.Direction)}
 		return newState, floorMap.With(g.Position, newState.Tile())
 	}
 
@@ -41,42 +38,31 @@ func (g GuardState) AdvanceOne(floorMap FloorMap) (*GuardState, FloorMap) {
 
 func (g GuardState) Tile() Tile {
 	switch g.Direction {
-	case North():
+	case map2d.North():
 		return GuardNorth
-	case East():
+	case map2d.East():
 		return GuardEast
-	case South():
+	case map2d.South():
 		return GuardSouth
-	case West():
+	case map2d.West():
 		return GuardWest
 	}
 	return Empty
 }
 
-// Direction for a movement on the map grid.
-type Direction struct {
-	x int
-	y int
-}
-
-func North() Direction { return Direction{y: -1} }
-func East() Direction  { return Direction{x: 1} }
-func South() Direction { return Direction{y: 1} }
-func West() Direction  { return Direction{x: -1} }
-
 // TurnRight returns a new direction after a 90 degree rotation clockwise.
-func (d Direction) turnRight() Direction {
+func turnRight(d map2d.Direction) map2d.Direction {
 	// we could use trigonometry instead, but since we're at right angles we can easily switch-case
 	// it and avoid rounding errors & angle normalization
 	switch d {
-	case East():
-		return South()
-	case South():
-		return West()
-	case West():
-		return North()
-	case North():
-		return East()
+	case map2d.East():
+		return map2d.South()
+	case map2d.South():
+		return map2d.West()
+	case map2d.West():
+		return map2d.North()
+	case map2d.North():
+		return map2d.East()
 	default:
 		panic("implementation error: non-cardinal Direction")
 	}
@@ -106,18 +92,18 @@ func (t Tile) IsGuard() bool {
 
 // Direction the guard is or was moving on this tile. If this tile isn't a guard's state, returns
 // an empty direction instead.
-func (t Tile) Direction() Direction {
+func (t Tile) Direction() map2d.Direction {
 	switch t {
 	case GuardNorth:
-		return North()
+		return map2d.North()
 	case GuardEast:
-		return East()
+		return map2d.East()
 	case GuardSouth:
-		return South()
+		return map2d.South()
 	case GuardWest:
-		return West()
+		return map2d.West()
 	}
-	return Direction{} // others: no direction
+	return map2d.Direction{} // others: no direction
 }
 
 // FloorMap is the map of the room.

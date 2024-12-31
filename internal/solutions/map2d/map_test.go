@@ -1,7 +1,6 @@
 package map2d_test
 
 import (
-	"strconv"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -157,88 +156,6 @@ func TestMap_With(t *testing.T) {
 			got := tt.m.With(tt.pos, tt.newValue)
 			assert.Empty(t, cmp.Diff(tt.expected, got))
 			assert.NotEmpty(t, cmp.Diff(got, tt.m)) // original map must not be altered
-		})
-	}
-}
-
-func TestPosition_Sub(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		// inputs
-		p1, p2 map2d.Position
-
-		// outputs
-		expected map2d.Position
-	}{
-		{
-			p1:       map2d.Position{X: 0, Y: 0},
-			p2:       map2d.Position{X: 0, Y: 0},
-			expected: map2d.Position{X: 0, Y: 0},
-		},
-		{
-			p1:       map2d.Position{X: 1, Y: 2},
-			p2:       map2d.Position{X: 0, Y: 0},
-			expected: map2d.Position{X: 1, Y: 2},
-		},
-		{
-			p1:       map2d.Position{X: 0, Y: 0},
-			p2:       map2d.Position{X: 1, Y: 2},
-			expected: map2d.Position{X: -1, Y: -2},
-		},
-		{
-			p1:       map2d.Position{X: 3, Y: 2},
-			p2:       map2d.Position{X: 1, Y: 4},
-			expected: map2d.Position{X: 2, Y: -2},
-		},
-	}
-	for i, tt := range tests {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			t.Parallel()
-
-			got := tt.p1.Sub(tt.p2)
-			assert.Empty(t, cmp.Diff(tt.expected, got))
-		})
-	}
-}
-
-func TestPosition_Add(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		// inputs
-		p1, p2 map2d.Position
-
-		// outputs
-		expected map2d.Position
-	}{
-		{
-			p1:       map2d.Position{X: 0, Y: 0},
-			p2:       map2d.Position{X: 0, Y: 0},
-			expected: map2d.Position{X: 0, Y: 0},
-		},
-		{
-			p1:       map2d.Position{X: 1, Y: 2},
-			p2:       map2d.Position{X: 0, Y: 0},
-			expected: map2d.Position{X: 1, Y: 2},
-		},
-		{
-			p1:       map2d.Position{X: 0, Y: 0},
-			p2:       map2d.Position{X: 1, Y: 2},
-			expected: map2d.Position{X: 1, Y: 2},
-		},
-		{
-			p1:       map2d.Position{X: 3, Y: 2},
-			p2:       map2d.Position{X: 1, Y: 4},
-			expected: map2d.Position{X: 4, Y: 6},
-		},
-	}
-	for i, tt := range tests {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			t.Parallel()
-
-			got := tt.p1.Add(tt.p2)
-			assert.Empty(t, cmp.Diff(tt.expected, got))
 		})
 	}
 }

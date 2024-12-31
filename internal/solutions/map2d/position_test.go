@@ -1,0 +1,147 @@
+package map2d_test
+
+import (
+	"strconv"
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/segwin/adventofcode-2024/internal/solutions/map2d"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestPosition_Sub(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		// inputs
+		p1, p2 map2d.Position
+
+		// outputs
+		expected map2d.Position
+	}{
+		{
+			p1:       map2d.Position{X: 0, Y: 0},
+			p2:       map2d.Position{X: 0, Y: 0},
+			expected: map2d.Position{X: 0, Y: 0},
+		},
+		{
+			p1:       map2d.Position{X: 1, Y: 2},
+			p2:       map2d.Position{X: 0, Y: 0},
+			expected: map2d.Position{X: 1, Y: 2},
+		},
+		{
+			p1:       map2d.Position{X: 0, Y: 0},
+			p2:       map2d.Position{X: 1, Y: 2},
+			expected: map2d.Position{X: -1, Y: -2},
+		},
+		{
+			p1:       map2d.Position{X: 3, Y: 2},
+			p2:       map2d.Position{X: 1, Y: 4},
+			expected: map2d.Position{X: 2, Y: -2},
+		},
+	}
+	for i, tt := range tests {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			t.Parallel()
+
+			got := tt.p1.Sub(tt.p2)
+			assert.Empty(t, cmp.Diff(tt.expected, got))
+		})
+	}
+}
+
+func TestPosition_Add(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		// inputs
+		p1, p2 map2d.Position
+
+		// outputs
+		expected map2d.Position
+	}{
+		{
+			p1:       map2d.Position{X: 0, Y: 0},
+			p2:       map2d.Position{X: 0, Y: 0},
+			expected: map2d.Position{X: 0, Y: 0},
+		},
+		{
+			p1:       map2d.Position{X: 1, Y: 2},
+			p2:       map2d.Position{X: 0, Y: 0},
+			expected: map2d.Position{X: 1, Y: 2},
+		},
+		{
+			p1:       map2d.Position{X: 0, Y: 0},
+			p2:       map2d.Position{X: 1, Y: 2},
+			expected: map2d.Position{X: 1, Y: 2},
+		},
+		{
+			p1:       map2d.Position{X: 3, Y: 2},
+			p2:       map2d.Position{X: 1, Y: 4},
+			expected: map2d.Position{X: 4, Y: 6},
+		},
+	}
+	for i, tt := range tests {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			t.Parallel()
+
+			got := tt.p1.Add(tt.p2)
+			assert.Empty(t, cmp.Diff(tt.expected, got))
+		})
+	}
+}
+
+func TestPosition_Move(t *testing.T) {
+	t.Parallel()
+
+	tests := map[string]struct {
+		// inputs
+		p      map2d.Position
+		d      map2d.Direction
+		amount int
+
+		// outputs
+		expected map2d.Position
+	}{
+		"move north by 1": {
+			p: map2d.Position{}, d: map2d.North(), amount: 1,
+			expected: map2d.Position{X: 0, Y: -1},
+		},
+		"move north by 10": {
+			p: map2d.Position{}, d: map2d.North(), amount: 10,
+			expected: map2d.Position{X: 0, Y: -10},
+		},
+		"move east by 1": {
+			p: map2d.Position{}, d: map2d.East(), amount: 1,
+			expected: map2d.Position{X: 1, Y: 0},
+		},
+		"move east by 10": {
+			p: map2d.Position{}, d: map2d.East(), amount: 10,
+			expected: map2d.Position{X: 10, Y: 0},
+		},
+		"move south by 1": {
+			p: map2d.Position{}, d: map2d.South(), amount: 1,
+			expected: map2d.Position{X: 0, Y: 1},
+		},
+		"move south by 10": {
+			p: map2d.Position{}, d: map2d.South(), amount: 10,
+			expected: map2d.Position{X: 0, Y: 10},
+		},
+		"move west by 1": {
+			p: map2d.Position{}, d: map2d.West(), amount: 1,
+			expected: map2d.Position{X: -1, Y: 0},
+		},
+		"move west by 10": {
+			p: map2d.Position{}, d: map2d.West(), amount: 10,
+			expected: map2d.Position{X: -10, Y: 0},
+		},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			got := tt.p.Move(tt.d, tt.amount)
+			assert.Empty(t, cmp.Diff(tt.expected, got))
+		})
+	}
+}
