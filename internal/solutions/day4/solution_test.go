@@ -5,7 +5,16 @@ import (
 
 	"github.com/segwin/adventofcode-2024/internal/solutions/day4"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
+
+func TestSolution(t *testing.T) {
+	t.Parallel()
+
+	s, err := day4.BuildSolution()
+	require.NoError(t, err)
+	require.NoError(t, s.RunToConsole())
+}
 
 func TestCountXMAS(t *testing.T) {
 	t.Parallel()

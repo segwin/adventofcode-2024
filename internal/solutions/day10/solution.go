@@ -73,7 +73,7 @@ func climbAround(terrain TopographicMap, curPos map2d.Position) TrailStep {
 	}
 
 	root := TrailStep{Position: curPos, Height: cur}
-	for _, dir := range []map2d.Direction{map2d.North(), map2d.East(), map2d.South(), map2d.West()} {
+	for _, dir := range map2d.CardinalDirections() {
 		nextPos := curPos.Move(dir, 1)
 		next, ok := terrain.Get(nextPos)
 		if !ok || next-cur != 1 {

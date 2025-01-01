@@ -5,7 +5,16 @@ import (
 
 	"github.com/segwin/adventofcode-2024/internal/solutions/day8"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
+
+func TestSolution(t *testing.T) {
+	t.Parallel()
+
+	s, err := day8.BuildSolution()
+	require.NoError(t, err)
+	require.NoError(t, s.RunToConsole())
+}
 
 func TestUniqueAntinodes(t *testing.T) {
 	t.Parallel()

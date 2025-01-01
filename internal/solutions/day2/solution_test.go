@@ -8,6 +8,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestSolution(t *testing.T) {
+	t.Parallel()
+
+	s, err := day2.BuildSolution()
+	require.NoError(t, err)
+	require.NoError(t, s.RunToConsole())
+}
+
 func TestSafeReports(t *testing.T) {
 	t.Parallel()
 

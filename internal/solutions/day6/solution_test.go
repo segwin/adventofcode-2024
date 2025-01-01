@@ -8,6 +8,18 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestSolution(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipped long test because -short was set")
+	}
+
+	t.Parallel()
+
+	s, err := day6.BuildSolution()
+	require.NoError(t, err)
+	require.NoError(t, s.RunToConsole())
+}
+
 func TestCountGuardPositions(t *testing.T) {
 	t.Parallel()
 

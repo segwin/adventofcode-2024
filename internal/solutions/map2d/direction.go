@@ -9,3 +9,7 @@ func North() Direction { return Direction{offset: Position{Y: -1}} }
 func East() Direction  { return Direction{offset: Position{X: 1}} }
 func South() Direction { return Direction{offset: Position{Y: 1}} }
 func West() Direction  { return Direction{offset: Position{X: -1}} }
+
+func CardinalDirections() []Direction {
+	return []Direction{North(), East(), South(), West()}
+}

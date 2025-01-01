@@ -8,6 +8,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestSolution(t *testing.T) {
+	t.Parallel()
+
+	s, err := day3.BuildSolution()
+	require.NoError(t, err)
+	require.NoError(t, s.RunToConsole())
+}
+
 func TestSumMuls(t *testing.T) {
 	t.Parallel()
 
@@ -20,11 +28,11 @@ func TestSumMuls(t *testing.T) {
 		expected    int
 		expectedErr error
 	}{
-		// "ok: day's example": {
-		// 	memory:           `xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))`,
-		// 	withConditionals: false,
-		// 	expected:         161,
-		// },
+		"ok: day's example": {
+			memory:           `xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))`,
+			withConditionals: false,
+			expected:         161,
+		},
 		"ok: day's example, with conditionals": {
 			memory:           `xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))`,
 			withConditionals: true,

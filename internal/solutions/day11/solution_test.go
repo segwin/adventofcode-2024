@@ -7,7 +7,16 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/segwin/adventofcode-2024/internal/solutions/day11"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
+
+func TestSolution(t *testing.T) {
+	t.Parallel()
+
+	s, err := day11.BuildSolution()
+	require.NoError(t, err)
+	require.NoError(t, s.RunToConsole())
+}
 
 func TestBlink_Once(t *testing.T) {
 	t.Parallel()
