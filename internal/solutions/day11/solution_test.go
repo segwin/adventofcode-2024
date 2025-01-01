@@ -4,11 +4,12 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/segwin/adventofcode-2024/internal/solutions/day11"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBlink(t *testing.T) {
+func TestBlink_Once(t *testing.T) {
 	t.Parallel()
 
 	tests := map[string]struct {
@@ -16,48 +17,48 @@ func TestBlink(t *testing.T) {
 		stones []day11.Stone
 
 		// outputs
-		expected []day11.Stone
+		expected int
 	}{
 		"day's simplified example": {
 			stones:   []day11.Stone{0, 1, 10, 99, 999},
-			expected: []day11.Stone{1, 2024, 1, 0, 9, 9, 2021976},
+			expected: 7,
 		},
 		"day's full example: blink 1": {
 			stones:   []day11.Stone{125, 17},
-			expected: []day11.Stone{253000, 1, 7},
+			expected: 3,
 		},
 		"day's full example: blink 2": {
 			stones:   []day11.Stone{253000, 1, 7},
-			expected: []day11.Stone{253, 0, 2024, 14168},
+			expected: 4,
 		},
 		"day's full example: blink 3": {
 			stones:   []day11.Stone{253, 0, 2024, 14168},
-			expected: []day11.Stone{512072, 1, 20, 24, 28676032},
+			expected: 5,
 		},
 		"day's full example: blink 4": {
 			stones:   []day11.Stone{512072, 1, 20, 24, 28676032},
-			expected: []day11.Stone{512, 72, 2024, 2, 0, 2, 4, 2867, 6032},
+			expected: 9,
 		},
 		"day's full example: blink 5": {
 			stones:   []day11.Stone{512, 72, 2024, 2, 0, 2, 4, 2867, 6032},
-			expected: []day11.Stone{1036288, 7, 2, 20, 24, 4048, 1, 4048, 8096, 28, 67, 60, 32},
+			expected: 13,
 		},
 		"day's full example: blink 6": {
 			stones:   []day11.Stone{1036288, 7, 2, 20, 24, 4048, 1, 4048, 8096, 28, 67, 60, 32},
-			expected: []day11.Stone{2097446912, 14168, 4048, 2, 0, 2, 4, 40, 48, 2024, 40, 48, 80, 96, 2, 8, 6, 7, 6, 0, 3, 2},
+			expected: 22,
 		},
 	}
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			got := day11.Blink(tt.stones)
-			assert.Empty(t, cmp.Diff(tt.expected, got))
+			got := day11.Blink(tt.stones, 1)
+			assert.Empty(t, cmp.Diff(tt.expected, got, cmpopts.SortSlices(func(a, b day11.Stone) bool { return a < b })))
 		})
 	}
 }
 
-func TestBlinkTimes(t *testing.T) {
+func TestBlink_Times(t *testing.T) {
 	t.Parallel()
 
 	tests := map[string]struct {
@@ -83,8 +84,8 @@ func TestBlinkTimes(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			got := day11.BlinkTimes(tt.stones, tt.times)
-			assert.Equal(t, tt.expectedCount, len(got))
+			got := day11.Blink(tt.stones, tt.times)
+			assert.Equal(t, tt.expectedCount, got)
 		})
 	}
 }

@@ -1,6 +1,8 @@
 package day11
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Solution struct {
 	InitialStones []Stone
@@ -10,22 +12,23 @@ func (s *Solution) RunToConsole() error {
 	fmt.Print("DAY 11:\n")
 
 	fmt.Print("  PART 1:\n")
-	fmt.Printf("    Total stones after 25 blinks: %d\n", len(BlinkTimes(s.InitialStones, 25)))
+	fmt.Printf("    Total stones after 25 blinks: %d\n", Blink(s.InitialStones, 25))
+
+	fmt.Print("  PART 2:\n")
+	fmt.Printf("    Total stones after 75 blinks: %d\n", Blink(s.InitialStones, 75))
 
 	return nil
 }
 
-func Blink(stones []Stone) []Stone {
-	newStones := make([]Stone, 0, len(stones))
-	for _, s := range stones {
-		newStones = append(newStones, s.Change()...)
+func Blink(stones []Stone, times int) (finalCount int) {
+	sc := stoneCounts{}
+	for _, stone := range stones {
+		sc[stone]++
 	}
-	return newStones
-}
 
-func BlinkTimes(stones []Stone, times int) []Stone {
 	for range times {
-		stones = Blink(stones)
+		sc = sc.Blink()
 	}
-	return stones
+
+	return sc.Total()
 }
