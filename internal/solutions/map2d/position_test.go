@@ -145,3 +145,65 @@ func TestPosition_Move(t *testing.T) {
 		})
 	}
 }
+
+func TestPosition_ProjectOnto(t *testing.T) {
+	t.Parallel()
+
+	tests := map[string]struct {
+		// inputs
+		p map2d.Position
+		d map2d.Direction
+
+		// outputs
+		expected int
+	}{
+		"north, y = 0 => 0": {
+			p:        map2d.Position{X: 1, Y: 0},
+			d:        map2d.North(),
+			expected: 0,
+		},
+		"north, y = 4 => -4": {
+			p:        map2d.Position{X: 1, Y: 4},
+			d:        map2d.North(),
+			expected: -4,
+		},
+		"east, x = 0 => 0": {
+			p:        map2d.Position{X: 0, Y: 1},
+			d:        map2d.East(),
+			expected: 0,
+		},
+		"east, x = 4 => 4": {
+			p:        map2d.Position{X: 4, Y: 1},
+			d:        map2d.East(),
+			expected: 4,
+		},
+		"south, y = 0 => 0": {
+			p:        map2d.Position{X: 1, Y: 0},
+			d:        map2d.South(),
+			expected: 0,
+		},
+		"south, y = 4 => 4": {
+			p:        map2d.Position{X: 1, Y: 4},
+			d:        map2d.South(),
+			expected: 4,
+		},
+		"west, x = 0 => 0": {
+			p:        map2d.Position{X: 0, Y: 1},
+			d:        map2d.West(),
+			expected: 0,
+		},
+		"west, x = 4 => -4": {
+			p:        map2d.Position{X: 4, Y: 1},
+			d:        map2d.West(),
+			expected: -4,
+		},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			got := tt.p.ProjectOnto(tt.d)
+			assert.Equal(t, tt.expected, got)
+		})
+	}
+}

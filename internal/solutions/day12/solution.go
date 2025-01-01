@@ -18,9 +18,13 @@ func (s *Solution) RunToConsole() error {
 	fmt.Print("  PART 1:\n")
 	fmt.Printf("    Total fence price: %d\n", TotalFencePrice(regions))
 
+	fmt.Print("  PART 2:\n")
+	fmt.Printf("    Total discounted fence price: %d\n", TotalDiscountedFencePrice(regions, s.Garden))
+
 	return nil
 }
 
+// GetRegions aggregates all adjacent plots of the same kind in the garden into regions.
 func GetRegions(garden Garden) []Region {
 	regions := make([]Region, 0, len(garden)) // worst case: # regions = # plots
 
@@ -31,8 +35,14 @@ func GetRegions(garden Garden) []Region {
 			if _, consumed := consumedPositions[pos]; consumed {
 				continue // already covered this plot
 			}
+
 			positions, perimeter := findRegionAround(pos, kind, garden, consumedPositions)
-			regions = append(regions, Region{Kind: kind, Area: len(positions), Perimeter: perimeter})
+			regions = append(regions, Region{
+				Kind:      kind,
+				Positions: positions,
+				Area:      len(positions),
+				Perimeter: perimeter,
+			})
 		}
 	}
 
@@ -44,9 +54,9 @@ func findRegionAround(
 	kind byte,
 	in Garden,
 	consumedPositions map[map2d.Position]struct{},
-) (positions []map2d.Position, perimeter int) {
+) (positions map[map2d.Position]struct{}, perimeter int) {
 	// store current position
-	positions = append(positions, cur)
+	positions = map[map2d.Position]struct{}{cur: {}}
 	consumedPositions[cur] = struct{}{}
 
 	// find adjacent plots of the same kind
@@ -68,13 +78,16 @@ func findRegionAround(
 
 		// recurse along this path, but don't come back to this block
 		nextPositions, nextPerimeter := findRegionAround(next, kind, in, consumedPositions)
-		positions = append(positions, nextPositions...)
+		for pos := range nextPositions {
+			positions[pos] = struct{}{}
+		}
 		perimeter += nextPerimeter
 	}
 
 	return positions, perimeter
 }
 
+// TotalFencePrice returns the total cost of fencing for these regions without any discounts.
 func TotalFencePrice(regions []Region) int {
 	sum := 0
 	for _, r := range regions {
@@ -85,4 +98,16 @@ func TotalFencePrice(regions []Region) int {
 
 func fencePrice(r Region) int {
 	return r.Area * r.Perimeter
+}
+
+func TotalDiscountedFencePrice(regions []Region, garden Garden) int {
+	sum := 0
+	for _, r := range regions {
+		sum += discountedFencePrice(r, garden)
+	}
+	return sum
+}
+
+func discountedFencePrice(r Region, garden Garden) int {
+	return r.Area * r.Sides(garden)
 }

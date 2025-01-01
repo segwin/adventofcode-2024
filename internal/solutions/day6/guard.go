@@ -27,7 +27,7 @@ func (g GuardState) AdvanceOne(floorMap FloorMap) (*GuardState, FloorMap) {
 
 	if nextTile == Obstacle {
 		// something's blocking the path, turn right 90 degrees
-		newState := &GuardState{Position: g.Position, Direction: turnRight(g.Direction)}
+		newState := &GuardState{Position: g.Position, Direction: g.Direction.TurnClockwise()}
 		return newState, floorMap.With(g.Position, newState.Tile())
 	}
 
@@ -48,24 +48,6 @@ func (g GuardState) Tile() Tile {
 		return GuardWest
 	}
 	return Empty
-}
-
-// TurnRight returns a new direction after a 90 degree rotation clockwise.
-func turnRight(d map2d.Direction) map2d.Direction {
-	// we could use trigonometry instead, but since we're at right angles we can easily switch-case
-	// it and avoid rounding errors & angle normalization
-	switch d {
-	case map2d.East():
-		return map2d.South()
-	case map2d.South():
-		return map2d.West()
-	case map2d.West():
-		return map2d.North()
-	case map2d.North():
-		return map2d.East()
-	default:
-		panic("implementation error: non-cardinal Direction")
-	}
 }
 
 // Tile on the map grid.

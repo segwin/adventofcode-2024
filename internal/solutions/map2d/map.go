@@ -14,6 +14,14 @@ func (m Map[T]) Get(pos Position) (value T, ok bool) {
 	return m[pos.Y][pos.X], true
 }
 
+// Contains returns true if the given position is present in the map.
+//
+// Equivalent to _, contains := m.Get(pos).
+func (m Map[T]) Contains(pos Position) bool {
+	_, ok := m.Get(pos)
+	return ok
+}
+
 // With returns a new map with the given position set to newValue.
 // Unrelated rows are shared in memory with the original map.
 //

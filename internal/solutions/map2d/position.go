@@ -35,6 +35,22 @@ func (p Position) LessThan(p2 Position) bool {
 	return false // equal or greater
 }
 
+// ProjectOnto returns the component of p that aligns with the given direction.
+func (p Position) ProjectOnto(d Direction) int {
+	switch d {
+	case North():
+		return -p.Y
+	case East():
+		return p.X
+	case South():
+		return p.Y
+	case West():
+		return -p.X
+	default:
+		return 0 // invalid or zero direction: x*0 == 0
+	}
+}
+
 // PositionFromIndex creates a Position object from the given map indices.
 // Useful since Position represents visual X/Y coordinates which are the inverse of i/j indices.
 func PositionFromIndex(i, j int) Position {
