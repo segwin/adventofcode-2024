@@ -14,29 +14,30 @@ func TestPosition_Sub(t *testing.T) {
 
 	tests := []struct {
 		// inputs
-		p1, p2 map2d.Position
+		p    map2d.Position
+		x, y int
 
 		// outputs
 		expected map2d.Position
 	}{
 		{
-			p1:       map2d.Position{X: 0, Y: 0},
-			p2:       map2d.Position{X: 0, Y: 0},
+			p: map2d.Position{X: 0, Y: 0},
+			x: 0, y: 0,
 			expected: map2d.Position{X: 0, Y: 0},
 		},
 		{
-			p1:       map2d.Position{X: 1, Y: 2},
-			p2:       map2d.Position{X: 0, Y: 0},
+			p: map2d.Position{X: 1, Y: 2},
+			x: 0, y: 0,
 			expected: map2d.Position{X: 1, Y: 2},
 		},
 		{
-			p1:       map2d.Position{X: 0, Y: 0},
-			p2:       map2d.Position{X: 1, Y: 2},
+			p: map2d.Position{X: 0, Y: 0},
+			x: 1, y: 2,
 			expected: map2d.Position{X: -1, Y: -2},
 		},
 		{
-			p1:       map2d.Position{X: 3, Y: 2},
-			p2:       map2d.Position{X: 1, Y: 4},
+			p: map2d.Position{X: 3, Y: 2},
+			x: 1, y: 4,
 			expected: map2d.Position{X: 2, Y: -2},
 		},
 	}
@@ -44,7 +45,7 @@ func TestPosition_Sub(t *testing.T) {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			t.Parallel()
 
-			got := tt.p1.Sub(tt.p2)
+			got := tt.p.Sub(tt.x, tt.y)
 			assert.Empty(t, cmp.Diff(tt.expected, got))
 		})
 	}
@@ -55,29 +56,30 @@ func TestPosition_Add(t *testing.T) {
 
 	tests := []struct {
 		// inputs
-		p1, p2 map2d.Position
+		p    map2d.Position
+		x, y int
 
 		// outputs
 		expected map2d.Position
 	}{
 		{
-			p1:       map2d.Position{X: 0, Y: 0},
-			p2:       map2d.Position{X: 0, Y: 0},
+			p: map2d.Position{X: 0, Y: 0},
+			x: 0, y: 0,
 			expected: map2d.Position{X: 0, Y: 0},
 		},
 		{
-			p1:       map2d.Position{X: 1, Y: 2},
-			p2:       map2d.Position{X: 0, Y: 0},
+			p: map2d.Position{X: 1, Y: 2},
+			x: 0, y: 0,
 			expected: map2d.Position{X: 1, Y: 2},
 		},
 		{
-			p1:       map2d.Position{X: 0, Y: 0},
-			p2:       map2d.Position{X: 1, Y: 2},
+			p: map2d.Position{X: 0, Y: 0},
+			x: 1, y: 2,
 			expected: map2d.Position{X: 1, Y: 2},
 		},
 		{
-			p1:       map2d.Position{X: 3, Y: 2},
-			p2:       map2d.Position{X: 1, Y: 4},
+			p: map2d.Position{X: 3, Y: 2},
+			x: 1, y: 4,
 			expected: map2d.Position{X: 4, Y: 6},
 		},
 	}
@@ -85,7 +87,7 @@ func TestPosition_Add(t *testing.T) {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			t.Parallel()
 
-			got := tt.p1.Add(tt.p2)
+			got := tt.p.Add(tt.x, tt.y)
 			assert.Empty(t, cmp.Diff(tt.expected, got))
 		})
 	}

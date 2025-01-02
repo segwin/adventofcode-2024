@@ -1,24 +1,24 @@
 package map2d
 
-// Position on a 2D Map.
+// Position on a 2D Map. The origin is defined as the map's upper-left corner.
 type Position struct {
-	X int
-	Y int
+	// X and Y coordinates on the map. X=0 is the left edge, Y=0 is the top edge.
+	X, Y int
 }
 
-// Sub returns the difference between this position and p2.
-func (p Position) Sub(p2 Position) Position {
-	return Position{X: p.X - p2.X, Y: p.Y - p2.Y}
+// Sub returns the difference between this position and the given X/Y values.
+func (p Position) Sub(x, y int) Position {
+	return Position{X: p.X - x, Y: p.Y - y}
 }
 
-// Add returns the sum of this position and p2.
-func (p Position) Add(p2 Position) Position {
-	return Position{X: p.X + p2.X, Y: p.Y + p2.Y}
+// Add returns the sum of this position and the given X/Y values.
+func (p Position) Add(x, y int) Position {
+	return Position{X: p.X + x, Y: p.Y + y}
 }
 
 // Move in the given direction by the given amount.
 func (p Position) Move(d Direction, amount int) Position {
-	return p.Add(Position{X: amount * d.offset.X, Y: amount * d.offset.Y})
+	return p.Add(amount*d.offset.X, amount*d.offset.Y)
 }
 
 // LessThan returns true if this position is less than p2. Ordering is implementation-defined.

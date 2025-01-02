@@ -63,13 +63,13 @@ func findAllAntinodes(cityMap CityMap, includeHarmonics bool) []map2d.Position {
 }
 
 func findAntinodesAfter(cityMap CityMap, p1, p2 map2d.Position, includeHarmonics bool) (antinodes []map2d.Position) {
-	distance := p2.Sub(p1)
+	distance := p2.Sub(p1.X, p1.Y)
 
 	if includeHarmonics {
 		antinodes = []map2d.Position{p1, p2} // antennae's positions are included in harmonics mode
 	}
 
-	candidate := p1.Sub(distance)
+	candidate := p1.Sub(distance.X, distance.Y)
 	for {
 		if _, ok := cityMap.Get(candidate); !ok {
 			return antinodes // reached end of map
@@ -80,6 +80,6 @@ func findAntinodesAfter(cityMap CityMap, p1, p2 map2d.Position, includeHarmonics
 			return antinodes // harmonics disabled, don't calculate other antinodes along the path
 		}
 
-		candidate = candidate.Sub(distance)
+		candidate = candidate.Sub(distance.X, distance.Y)
 	}
 }

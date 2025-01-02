@@ -3,7 +3,9 @@ package map2d
 import "math"
 
 // Distance on a 2D map.
-type Distance Position
+type Distance struct {
+	X, Y int
+}
 
 // Norm returns the Euclidean norm of this distance.
 func (d Distance) Norm() float64 {

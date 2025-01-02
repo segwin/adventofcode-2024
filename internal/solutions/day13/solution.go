@@ -30,7 +30,7 @@ func CorrectMachines(prizeOffset int, machines ...ClawMachine) []ClawMachine {
 		correctedMachines[i] = ClawMachine{
 			MoveA: machines[i].MoveA,
 			MoveB: machines[i].MoveB,
-			Prize: machines[i].Prize.Add(map2d.Position{X: prizeOffset, Y: prizeOffset}),
+			Prize: machines[i].Prize.Add(prizeOffset, prizeOffset),
 		}
 	}
 	return correctedMachines
