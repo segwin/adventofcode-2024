@@ -15,5 +15,5 @@ type ClawMachine struct {
 	// MoveB is the movement effect from pressing button MoveB.
 	MoveB map2d.Distance
 	// Prize position within the claw machine, measured as distance from the origin.
-	Prize map2d.Distance
+	Prize map2d.Position
 }

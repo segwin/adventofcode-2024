@@ -38,19 +38,32 @@ func BuildSolution() (*Solution, error) {
 		}
 	}
 
+	if cur != nil {
+		// input ended withot a final newline
+		s.Machines = append(s.Machines, *cur)
+	}
+
 	return &s, nil
 }
 
-func parseDistance(xstr, ystr string) (map2d.Distance, error) {
+func parsePosition(xstr, ystr string) (map2d.Position, error) {
 	x, err := strconv.Atoi(xstr)
 	if err != nil {
-		return map2d.Distance{}, fmt.Errorf("parsing x value %q: %w", xstr, err)
+		return map2d.Position{}, fmt.Errorf("parsing x value %q: %w", xstr, err)
 	}
 	y, err := strconv.Atoi(ystr)
 	if err != nil {
-		return map2d.Distance{}, fmt.Errorf("parsing y value %q: %w", ystr, err)
+		return map2d.Position{}, fmt.Errorf("parsing y value %q: %w", ystr, err)
 	}
-	return map2d.Distance{X: x, Y: y}, nil
+	return map2d.Position{X: x, Y: y}, nil
+}
+
+func parseDistance(xstr, ystr string) (map2d.Distance, error) {
+	pos, err := parsePosition(xstr, ystr)
+	if err != nil {
+		return map2d.Distance{}, err
+	}
+	return map2d.Distance(pos), nil
 }
 
 var (
@@ -75,7 +88,7 @@ func parseLine(line string, dst *ClawMachine) (err error) {
 		return nil
 	}
 	if matches := prizePattern.FindStringSubmatch(line); matches != nil {
-		dst.Prize, err = parseDistance(matches[1], matches[2])
+		dst.Prize, err = parsePosition(matches[1], matches[2])
 		if err != nil {
 			return err
 		}
