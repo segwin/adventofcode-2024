@@ -46,6 +46,36 @@ func BuildSolution() (*Solution, error) {
 	return &s, nil
 }
 
+var (
+	buttonPattern = regexp.MustCompile(`Button ([AB]): X\+([0-9]+), Y\+([0-9]+)`)
+	prizePattern  = regexp.MustCompile(`Prize: X=([0-9]+), Y=([0-9]+)`)
+)
+
+func parseLine(line string, dst *ClawMachine) (err error) {
+	if matches := buttonPattern.FindStringSubmatch(line); matches != nil {
+		move, err := parseDistance(matches[2], matches[3])
+		if err != nil {
+			return err
+		}
+		if matches[1] == "A" {
+			dst.MoveA = move
+		} else { // "B"
+			dst.MoveB = move
+		}
+		return nil
+	}
+
+	if matches := prizePattern.FindStringSubmatch(line); matches != nil {
+		dst.Prize, err = parsePosition(matches[1], matches[2])
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return fmt.Errorf("%w: unknown line pattern", parsing.ErrInvalidData)
+}
+
 func parsePosition(xstr, ystr string) (map2d.Position, error) {
 	x, err := strconv.Atoi(xstr)
 	if err != nil {
@@ -64,35 +94,4 @@ func parseDistance(xstr, ystr string) (map2d.Distance, error) {
 		return map2d.Distance{}, err
 	}
 	return map2d.Distance(pos), nil
-}
-
-var (
-	moveAPattern = regexp.MustCompile(`Button A: X\+([0-9]+), Y\+([0-9]+)`)
-	moveBPattern = regexp.MustCompile(`Button B: X\+([0-9]+), Y\+([0-9]+)`)
-	prizePattern = regexp.MustCompile(`Prize: X=([0-9]+), Y=([0-9]+)`)
-)
-
-func parseLine(line string, dst *ClawMachine) (err error) {
-	if matches := moveAPattern.FindStringSubmatch(line); matches != nil {
-		dst.MoveA, err = parseDistance(matches[1], matches[2])
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-	if matches := moveBPattern.FindStringSubmatch(line); matches != nil {
-		dst.MoveB, err = parseDistance(matches[1], matches[2])
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-	if matches := prizePattern.FindStringSubmatch(line); matches != nil {
-		dst.Prize, err = parsePosition(matches[1], matches[2])
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-	return fmt.Errorf("%w: unknown line pattern", parsing.ErrInvalidData)
 }
