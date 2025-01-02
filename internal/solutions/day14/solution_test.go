@@ -25,7 +25,7 @@ func TestAfter(t *testing.T) {
 		// inputs
 		seconds       int
 		initialStates []day14.RobotState
-		layout        day14.Map
+		layout        day14.Layout
 
 		// outputs
 		expected []day14.RobotState
@@ -35,7 +35,7 @@ func TestAfter(t *testing.T) {
 			initialStates: []day14.RobotState{
 				{Position: map2d.Position{X: 2, Y: 4}, Velocity: day14.Velocity{X: 2, Y: -3}},
 			},
-			layout: day14.NewMap(11, 7),
+			layout: day14.NewLayout(11, 7),
 			expected: []day14.RobotState{
 				{Position: map2d.Position{X: 1, Y: 3}, Velocity: day14.Velocity{X: 2, Y: -3}},
 			},
@@ -56,7 +56,7 @@ func TestAfter(t *testing.T) {
 				{Position: map2d.Position{X: 2, Y: 4}, Velocity: day14.Velocity{X: 2, Y: -3}},
 				{Position: map2d.Position{X: 9, Y: 5}, Velocity: day14.Velocity{X: -3, Y: -3}},
 			},
-			layout: day14.NewMap(11, 7),
+			layout: day14.NewLayout(11, 7),
 			expected: []day14.RobotState{
 				{Position: map2d.Position{X: 3, Y: 5}, Velocity: day14.Velocity{X: 3, Y: -3}},
 				{Position: map2d.Position{X: 5, Y: 4}, Velocity: day14.Velocity{X: -1, Y: -3}},
@@ -89,7 +89,7 @@ func TestSafetyFactor(t *testing.T) {
 	tests := map[string]struct {
 		// inputs
 		robots []day14.RobotState
-		layout day14.Map
+		layout day14.Layout
 
 		// outputs
 		expected int
@@ -108,8 +108,8 @@ func TestSafetyFactor(t *testing.T) {
 				{Position: map2d.Position{X: 7, Y: 3}, Velocity: day14.Velocity{X: -1, Y: 2}},
 				{Position: map2d.Position{X: 2, Y: 4}, Velocity: day14.Velocity{X: 2, Y: -3}},
 				{Position: map2d.Position{X: 9, Y: 5}, Velocity: day14.Velocity{X: -3, Y: -3}},
-			}, day14.NewMap(11, 7)),
-			layout:   day14.NewMap(11, 7),
+			}, day14.NewLayout(11, 7)),
+			layout:   day14.NewLayout(11, 7),
 			expected: 12,
 		},
 	}

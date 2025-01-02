@@ -6,11 +6,11 @@ import (
 	"github.com/segwin/adventofcode-2024/internal/solutions/map2d"
 )
 
-type Map map2d.Map[struct{}]
+type Layout map2d.Map[struct{}]
 
-// NewMap creates a new Map with the given X and Y dimensions.
-func NewMap(x, y int) Map {
-	m := make(Map, y)
+// NewLayout creates a new Layout with the given X and Y dimensions.
+func NewLayout(x, y int) Layout {
+	m := make(Layout, y)
 	for i := range m {
 		m[i] = make([]struct{}, x)
 	}
@@ -18,7 +18,7 @@ func NewMap(x, y int) Map {
 }
 
 // Quadrants of the map. If the map has odd-numbered dimensions, the odd middle line is omitted.
-func (m Map) Quadrants() [4]Quadrant {
+func (m Layout) Quadrants() [4]Quadrant {
 	maxX, maxY := len(m[0]), len(m)
 	midX, midY := float64(maxX)/2, float64(maxY)/2
 
@@ -42,7 +42,7 @@ func (m Map) Quadrants() [4]Quadrant {
 	}
 }
 
-// Quadrant of a Map.
+// Quadrant of a Layout.
 type Quadrant struct {
 	Start map2d.Position
 	End   map2d.Position
@@ -68,7 +68,7 @@ type RobotState struct {
 
 // After produces a new RobotState after the given number of seconds, with its position updated based
 // on its velocity.
-func (s RobotState) After(seconds int, layout Map) RobotState {
+func (s RobotState) After(seconds int, layout Layout) RobotState {
 	newState := RobotState{
 		Position: s.Position.Add(s.Velocity.X*seconds, s.Velocity.Y*seconds),
 		Velocity: s.Velocity,
