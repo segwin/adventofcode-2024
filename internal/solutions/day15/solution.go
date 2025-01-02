@@ -82,7 +82,7 @@ func resolveOne(layout Layout, robot map2d.Position, instruction map2d.Direction
 			newMovementFront[nextPos] = struct{}{}
 			tilesToMove[nextPos] = nextTile
 
-			if instruction == map2d.East() || instruction == map2d.West() {
+			if instruction.IsHorizontal() {
 				continue // stop here: wide (L/R) boxes only require joining in vertical movement
 			}
 

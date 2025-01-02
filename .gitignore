@@ -11,6 +11,9 @@
 # App binary, built with `go build -o aoc .`
 aoc
 
+# Debug binaries
+__debug_bin*
+
 # Test binary, built with `go test -c`
 *.test
 

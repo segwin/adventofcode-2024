@@ -39,3 +39,22 @@ func (d Direction) TurnClockwise() Direction {
 		return d // invalid or zero direction: rotations have no effect
 	}
 }
+
+// IsVertical returns true if this direction is North or South.
+func (d Direction) IsVertical() bool { return d.offset.Y != 0 }
+
+// IsHorizontal returns true if this direction is East or West.
+func (d Direction) IsHorizontal() bool { return d.offset.X != 0 }
+
+// Angle returns the angle between these two directions, in degrees.
+// Returned values are one of: 0, 90, 180
+func (d Direction) Angle(other Direction) int {
+	switch {
+	case d == other:
+		return 0 // same direction
+	case d.IsVertical() && other.IsVertical(), d.IsHorizontal() && other.IsHorizontal():
+		return 180 // same axis but not the same => opposite directions
+	default:
+		return 90 // other combinations: 90 degrees (only cardinal directions are supported)
+	}
+}

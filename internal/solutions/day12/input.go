@@ -14,10 +14,8 @@ func BuildSolution() (*Solution, error) {
 
 	sc := bufio.NewScanner(bytes.NewReader(inputData))
 	for sc.Scan() {
-		line := sc.Bytes()
-		row := make([]byte, len(line))
-		copy(row, line)
-		s.Garden = append(s.Garden, row)
+		line := sc.Text()
+		s.Garden = append(s.Garden, []byte(line))
 	}
 
 	return &s, nil
