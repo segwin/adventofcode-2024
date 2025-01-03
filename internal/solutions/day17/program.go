@@ -2,27 +2,23 @@ package day17
 
 import (
 	"fmt"
-	"strconv"
 )
 
-// ProgramState is the state of a program executed by the computer.
-type ProgramState struct {
+// State of a program being executed by the computer.
+type State struct {
 	// RegisterA, RegisterB and RegisterC are the computer's current register values.
 	RegisterA, RegisterB, RegisterC int
-
-	// Program to be executed.
-	Program []Instruction
 
 	// instructionPtr is the index of the next instruction to run.
 	instructionPtr int
 }
 
 // Next instruction to be executed. If the program has completed, ok is set to false.
-func (s *ProgramState) Next() (op Operation, operand Instruction, ok bool) {
-	if s.instructionPtr < 0 || s.instructionPtr >= len(s.Program) {
+func (s *State) Next(program []Instruction) (op Operation, operand Instruction, ok bool) {
+	if s.instructionPtr < 0 || s.instructionPtr >= len(program) {
 		return 0, 0, false
 	}
-	return Operation(s.Program[s.instructionPtr]), s.Program[s.instructionPtr+1], true
+	return Operation(program[s.instructionPtr]), program[s.instructionPtr+1], true
 }
 
 // Instruction for execution by the computer, given as a 3-bit integer (0-7).
@@ -66,7 +62,7 @@ const (
 )
 
 // Execute this operation, returning the new program state.
-func (c Operation) Execute(operand Instruction, cur ProgramState) (next ProgramState, output string) {
+func (c Operation) Execute(operand Instruction, cur State) (next State, output *Instruction) {
 	next = cur
 	next.instructionPtr += 2
 
@@ -89,7 +85,8 @@ func (c Operation) Execute(operand Instruction, cur ProgramState) (next ProgramS
 		next.RegisterB = cur.RegisterB ^ cur.RegisterC
 
 	case OUT:
-		output = strconv.Itoa(resolveComboOperand(operand, cur) % 8)
+		v := Instruction(resolveComboOperand(operand, cur) % 8) //nolint:gosec // overflow handled by modulo
+		output = &v
 
 	case BDV:
 		next.RegisterB = cur.RegisterA / (1 << resolveComboOperand(operand, cur))
@@ -104,7 +101,7 @@ func (c Operation) Execute(operand Instruction, cur ProgramState) (next ProgramS
 	return next, output
 }
 
-func resolveComboOperand(operand Instruction, state ProgramState) int {
+func resolveComboOperand(operand Instruction, state State) int {
 	//   - Combo operands 0 through 3 represent literal values 0 through 3.
 	//   - Combo operand 4 represents the value of register A.
 	//   - Combo operand 5 represents the value of register B.

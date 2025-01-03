@@ -21,7 +21,7 @@ func BuildSolution() (*Solution, error) {
 
 	sc := bufio.NewScanner(bytes.NewReader(inputData))
 	for sc.Scan() {
-		if err := parseLine(sc.Text(), &s.InitialState); err != nil {
+		if err := parseLine(sc.Text(), &s); err != nil {
 			return nil, err
 		}
 	}
@@ -34,7 +34,7 @@ var (
 	programPattern  = regexp.MustCompile(`Program: ([0-9](?:,[0-9])*)`)
 )
 
-func parseLine(line string, dst *ProgramState) (err error) {
+func parseLine(line string, dst *Solution) (err error) {
 	if matches := registerPattern.FindStringSubmatch(line); matches != nil {
 		val, err := strconv.Atoi(matches[2])
 		if err != nil {
@@ -43,11 +43,11 @@ func parseLine(line string, dst *ProgramState) (err error) {
 
 		switch matches[1] {
 		case "A":
-			dst.RegisterA = val
+			dst.InitialState.RegisterA = val
 		case "B":
-			dst.RegisterB = val
+			dst.InitialState.RegisterB = val
 		default: // "C"
-			dst.RegisterC = val
+			dst.InitialState.RegisterC = val
 		}
 		return nil
 	}
