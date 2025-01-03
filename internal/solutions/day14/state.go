@@ -9,12 +9,8 @@ import (
 type Layout map2d.Map[struct{}]
 
 // NewLayout creates a new Layout with the given X and Y dimensions.
-func NewLayout(x, y int) Layout {
-	m := make(Layout, y)
-	for i := range m {
-		m[i] = make([]struct{}, x)
-	}
-	return m
+func NewLayout(lenX, lenY int) Layout {
+	return Layout(map2d.NewMap[struct{}](lenX, lenY))
 }
 
 // Quadrants of the map. If the map has odd-numbered dimensions, the odd middle line is omitted.

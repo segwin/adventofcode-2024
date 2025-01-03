@@ -5,6 +5,15 @@ import "slices"
 // Map of 2-dimensional values.
 type Map[T comparable] [][]T
 
+// NewMap creates a new Map with the given X and Y dimensions.
+func NewMap[T comparable](lenX, lenY int) Map[T] {
+	m := make([][]T, lenY)
+	for i := range m {
+		m[i] = make([]T, lenX)
+	}
+	return m
+}
+
 // Get the value at the given position. If that position is outside the map, ok is set to false.
 func (m Map[T]) Get(pos Position) (value T, ok bool) {
 	if pos.Y < 0 || pos.Y >= len(m) || pos.X < 0 || pos.X >= len(m[pos.Y]) {
