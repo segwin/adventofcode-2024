@@ -1,26 +1,18 @@
 package day6
 
 import (
-	"bufio"
 	"bytes"
 	_ "embed"
+
+	"github.com/segwin/adventofcode-2024/internal/solutions/map2d"
 )
 
 //go:embed input.txt
 var inputData []byte
 
 func BuildSolution() (*Solution, error) {
-	var s Solution
-
-	sc := bufio.NewScanner(bytes.NewReader(inputData))
-	for sc.Scan() {
-		line := sc.Bytes()
-		row := make([]Tile, len(line))
-		for i, t := range line {
-			row[i] = Tile(t)
-		}
-		s.FloorMap = append(s.FloorMap, row)
-	}
-
-	return &s, nil
+	r := bytes.NewReader(inputData)
+	return &Solution{
+		FloorMap: map2d.DecodeMap(r, func(cell byte) Tile { return Tile(cell) }),
+	}, nil
 }

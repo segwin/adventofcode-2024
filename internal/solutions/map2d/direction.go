@@ -1,6 +1,6 @@
 package map2d
 
-// Direction for a movement on the map grid.
+// Direction for a movement along one of the map grid's 2 axes.
 type Direction struct {
 	offset Position
 }

@@ -6,12 +6,12 @@ type Position struct {
 	X, Y int
 }
 
-// Sub returns the difference between this position and the given X/Y values.
-func (p Position) Sub(x, y int) Position {
-	return Position{X: p.X - x, Y: p.Y - y}
+// Sub returns the distance between this position and the given X/Y values.
+func (p Position) Sub(x, y int) Distance {
+	return Distance{X: p.X - x, Y: p.Y - y}
 }
 
-// Add returns the sum of this position and the given X/Y values.
+// Add returns a new position with the sum of this one and the given X/Y values.
 func (p Position) Add(x, y int) Position {
 	return Position{X: p.X + x, Y: p.Y + y}
 }
@@ -19,6 +19,12 @@ func (p Position) Add(x, y int) Position {
 // Move in the given direction by the given amount.
 func (p Position) Move(d Direction, amount int) Position {
 	return p.Add(amount*d.offset.X, amount*d.offset.Y)
+}
+
+// AdjacentTo returns true if p and p2 are directly adjacent on the map.
+func (p Position) AdjacentTo(p2 Position) bool {
+	d := p.Sub(p2.X, p2.Y)
+	return d.Norm() == 1
 }
 
 // LessThan returns true if this position is less than p2. Ordering is implementation-defined.

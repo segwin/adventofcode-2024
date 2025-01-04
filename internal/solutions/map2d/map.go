@@ -1,6 +1,10 @@
 package map2d
 
-import "slices"
+import (
+	"bufio"
+	"io"
+	"slices"
+)
 
 // Map of 2-dimensional values.
 type Map[T comparable] [][]T
@@ -12,6 +16,27 @@ func NewMap[T comparable](lenX, lenY int) Map[T] {
 		m[i] = make([]T, lenX)
 	}
 	return m
+}
+
+// DecodeMap parses a text-encoded map as provided in several day's inputs.
+//
+// Example input:
+//
+//	#...#.
+//	..#...
+//	.#..##
+func DecodeMap[T comparable](r io.Reader, parse func(cell byte) T) Map[T] {
+	var out Map[T]
+	sc := bufio.NewScanner(r)
+	for sc.Scan() {
+		line := sc.Bytes()
+		row := make([]T, len(line))
+		for i, t := range line {
+			row[i] = parse(t)
+		}
+		out = append(out, row)
+	}
+	return out
 }
 
 // Get the value at the given position. If that position is outside the map, ok is set to false.
