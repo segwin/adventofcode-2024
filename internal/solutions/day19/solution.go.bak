@@ -36,56 +36,61 @@ func PossibleDesigns(designs []Design, towels []Towel) int {
 // TotalCombinations returns the total number of possible towel combinations that meet the given designs.
 func TotalCombinations(designs []Design, towels []Towel) int {
 	totalCombinations := 0
-	cache := map[Design]int{}
 	for _, design := range designs {
-		combinations := combinationsFor(design, towels, cache)
-		if combinations == 0 {
-			continue // impossible design
-		}
-		totalCombinations += combinations
+		fmt.Printf("    Checking design %q...\n", design)
+		totalCombinations += countCombinations(design, towels)
 	}
 	return totalCombinations
 }
 
 func isPossible(design Design, towels []Towel) bool {
+	if len(design) == 0 {
+		return true
+	}
 	for _, towel := range towels {
-		if towel == design {
-			return true
-		}
 		if strings.HasPrefix(design, towel) && isPossible(design[len(towel):], towels) {
 			return true // ok: towel meets design
 		}
 	}
+
 	return false
 }
 
-func combinationsFor(design Design, towels []Towel, cache map[Design]int) (result int) {
-	if cached, ok := cache[design]; ok {
-		return cached
-	}
-
-	candidateTowels := make([]Towel, 0, len(towels))
-	for _, towel := range towels {
-		if strings.Contains(design, towel) {
-			candidateTowels = append(candidateTowels, towel)
-		}
-	}
-
-	for _, towel := range candidateTowels {
-		if !strings.HasPrefix(design, towel) {
-			continue // not a candidate
-		}
-
-		if towel == design {
+func countCombinations(design Design, towels []Towel) (combinations int) {
+	// create starting node
+	q := queue[node]{node{}} // starting node: empty design
+	for len(q) != 0 {
+		cur := q.Pop()
+		if cur.Design == design {
 			// ok: this towel completes the design
-			result++
+			combinations++
 			continue
 		}
 
-		// candidate: search for matching children
-		result += combinationsFor(design[len(towel):], candidateTowels, cache)
+		// not yet complete: queue all adjacent candidates
+		for _, towel := range towels {
+			next := node{Design: cur.Design + towel}
+			if strings.HasPrefix(design, next.Design) {
+				q.Push(next) // candidate
+			}
+		}
 	}
 
-	cache[design] = result
-	return result
+	return combinations
+}
+
+type node struct {
+	Design string
+}
+
+type queue[T any] []T
+
+func (q *queue[T]) Push(v T) {
+	(*q) = append((*q), v)
+}
+
+func (q *queue[T]) Pop() T {
+	v := (*q)[0]
+	(*q) = (*q)[1:]
+	return v
 }
