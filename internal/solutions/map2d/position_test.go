@@ -18,27 +18,27 @@ func TestPosition_Sub(t *testing.T) {
 		x, y int
 
 		// outputs
-		expected map2d.Position
+		expected map2d.Distance
 	}{
 		{
 			p: map2d.Position{X: 0, Y: 0},
 			x: 0, y: 0,
-			expected: map2d.Position{X: 0, Y: 0},
+			expected: map2d.Distance{X: 0, Y: 0},
 		},
 		{
 			p: map2d.Position{X: 1, Y: 2},
 			x: 0, y: 0,
-			expected: map2d.Position{X: 1, Y: 2},
+			expected: map2d.Distance{X: 1, Y: 2},
 		},
 		{
 			p: map2d.Position{X: 0, Y: 0},
 			x: 1, y: 2,
-			expected: map2d.Position{X: -1, Y: -2},
+			expected: map2d.Distance{X: -1, Y: -2},
 		},
 		{
 			p: map2d.Position{X: 3, Y: 2},
 			x: 1, y: 4,
-			expected: map2d.Position{X: 2, Y: -2},
+			expected: map2d.Distance{X: 2, Y: -2},
 		},
 	}
 	for i, tt := range tests {
